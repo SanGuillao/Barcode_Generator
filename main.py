@@ -37,6 +37,7 @@ parser.add_argument("Amount", type = int)
 parser.add_argument("Length", type = int)
 parser.add_argument("--str", dest = "String") # make this optional
 
+# unpack information from the CLI
 args = parser.parse_args()
 amnt = args.Amount
 length = args.Length
@@ -53,15 +54,20 @@ complete_possible = asc + num
 temp_brc = str
 new_barcodes = []
 
+# create new barcodes (based on how many from the CLI)
 for i in range(amnt):
+    # length is passed by CLI (if str was passed in then take into account)
     for j in range(length - len(str)):
         temp_brc += random.choice(complete_possible)
     
-    if Compare(temp_brc, list_of_barcodes):
+    # compare the generated barcode to existing ones
+    # both old list and the new list
+    if Compare(temp_brc, list_of_barcodes) and Compare(temp_brc, new_barcodes):
         new_barcodes.append(copy(temp_brc))
     else:
         i -= 1
 
+    # reset the temp barcode to default (default being the '' unless a str was passed in)
     temp_brc = str
 
 #print(new_barcodes)
@@ -69,3 +75,6 @@ for i in range(amnt):
 # output the complete list of barcodes
 df = pd.DataFrame(new_barcodes)
 df.to_csv('new_barcodes.csv')
+
+# give the user a completion notice
+print("Completed output to new_barcodes.csv")
